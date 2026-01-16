@@ -1,0 +1,32 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // BUCKET: ailbee-books
+    // Allow any authenticated user to read from this bucket.
+    // All write operations are managed by the backend service, so deny client writes.
+    match /b/ailbee-books/o/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // BUCKET: ailbee-user-data
+    // Users can read and write files ONLY within their own designated folder (their UID).
+    match /b/ailbee-user-data/o/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // BUCKET: ailbee-data-exports
+    // Users can read their own generated exports.
+    // Writes are managed by the backend service.
+    match /b/ailbee-data-exports/o/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // Default security rule: Deny all reads and writes to any path not explicitly matched.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

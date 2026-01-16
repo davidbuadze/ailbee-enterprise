@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === USERS Collection ===
+    // The on_user_signup function creates user profiles.
+    // Clients should NOT be able to create or modify their own profiles directly.
+    // Users can read their own profile.
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update, delete: if false; // Server-side (Function) only
+    }
+
+    // === BOOKS Collection ===
+    // The backend service manages book metadata.
+    // Authenticated users can read the list of books.
+    match /books/{bookId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Backend service only
+    }
+
+    // === AUDIT LOGS Collection ===
+    // Only backend services can write audit logs.
+    // No client should ever be able to read or write these.
+    match /audit_logs/{logId} {
+      allow read, write: if false;
+    }
+
+    // === ON_USER_DELETED Collection ===
+    // This is managed by the backend during the deletion process.
+    match /onUserDeleted/{userId} {
+        allow read, write: if false; // Backend service only
+    }
+
+    // === EXPORT LOGS Collection ===
+    // This is managed by the backend during data exports.
+    match /export_logs/{jobId} {
+        allow read, write: if false; // Backend service only
+    }
+  }
+}

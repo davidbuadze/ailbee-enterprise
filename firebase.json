@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "ailbee_frontend/build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

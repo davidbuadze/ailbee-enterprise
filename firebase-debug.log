@@ -1,0 +1,46 @@
+[debug] [2025-10-20T11:06:01.604Z] ----------------------------------------------------------------------
+[debug] [2025-10-20T11:06:01.608Z] Command:       /usr/local/nvm/versions/node/v22.20.0/bin/node /usr/local/node_packages/node_modules/.bin/firebase deploy --project ailbee --only hosting
+[debug] [2025-10-20T11:06:01.608Z] CLI Version:   13.28.0
+[debug] [2025-10-20T11:06:01.609Z] Platform:      linux
+[debug] [2025-10-20T11:06:01.609Z] Node Version:  v22.20.0
+[debug] [2025-10-20T11:06:01.609Z] Time:          Mon Oct 20 2025 11:06:01 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-10-20T11:06:01.609Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-20T11:06:01.714Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-20T11:06:01.714Z] > authorizing via signed-in user (david@buadze.com)
+[debug] [2025-10-20T11:06:01.715Z] [iam] checking project ailbee for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-10-20T11:06:01.716Z] Checked if tokens are valid: false, expires at: 1758465449520
+[debug] [2025-10-20T11:06:01.716Z] Checked if tokens are valid: false, expires at: 1758465449520
+[debug] [2025-10-20T11:06:01.717Z] > refreshing access token with scopes: []
+[debug] [2025-10-20T11:06:01.719Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-10-20T11:06:01.719Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-10-20T11:06:01.833Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2025-10-20T11:06:01.834Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-10-20T11:06:01.835Z] [iam] error while checking permissions, command may fail: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-10-20T11:06:01.835Z] Checked if tokens are valid: false, expires at: 1758465449520
+[debug] [2025-10-20T11:06:01.836Z] Checked if tokens are valid: false, expires at: 1758465449520
+[debug] [2025-10-20T11:06:01.836Z] > refreshing access token with scopes: []
+[debug] [2025-10-20T11:06:01.836Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-10-20T11:06:01.836Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-10-20T11:06:01.891Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2025-10-20T11:06:01.891Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-10-20T11:06:01.892Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-10-20T11:06:01.893Z] Specified "public" directory "ailbee_frontend/build/web" does not exist; Deploy to Hosting site "" may fail or be empty.
+[error] 
+[error] Error: Assertion failed: resolving hosting target of a site with no site name or target name. This should have caused an error earlier
