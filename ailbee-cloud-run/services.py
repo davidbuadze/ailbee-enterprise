@@ -1,9 +1,10 @@
 import os
 import datetime
 import firebase_admin
+import asyncio
 from firebase_admin import auth, firestore
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict, Set
 
 from google.cloud import discoveryengine_v1 as discoveryengine
 from google.api_core.exceptions import GoogleAPICallError
@@ -16,6 +17,13 @@ class User(BaseModel):
     email: Optional[str] = None
     is_anonymous: bool
 
+class UnifiedSearchResponse(BaseModel):
+    """Модель ответа междисциплинарного исследования."""
+    answer: str
+    relevant_subjects: List[str]
+    context_data: Dict[str, str]
+    sources: List[Dict] = []
+
 # --- 2. Сервис для работы с Firebase (Auth и Firestore) ---
 
 class FirebaseService:
@@ -23,24 +31,26 @@ class FirebaseService:
         try:
             firebase_admin.get_app()
         except ValueError:
-            # Инициализация Firebase Admin SDK
+            # Инициализация Firebase Admin SDK (Singleton)
             firebase_admin.initialize_app()
         self.db = firestore.client()
 
     def verify_token(self, auth_header: Optional[str]) -> User:
         """
         Проверяет токен из заголовка Authorization.
-        Если токена нет или он невалиден, возвращает анонимного пользователя.
+        Если токена нет или он невалиден, возвращает временного анонимного пользователя.
         """
+        # Если заголовок отсутствует или некорректен
         if not auth_header or not auth_header.startswith('Bearer '):
-            # Генерируем временный ID для анонима, если заголовка нет
-            return User(uid=f"anonymous_{os.urandom(4).hex()}", is_anonymous=True)
+            return User(uid=f"guest_{os.urandom(4).hex()}", is_anonymous=True)
 
         token = auth_header.split('Bearer ')[1]
         
         try:
+            # Верификация токена через Firebase Admin SDK
             decoded_token = auth.verify_id_token(token)
-            # Проверяем провайдера в метаданных Firebase
+            
+            # Проверяем провайдера в метаданных (поддержка Anonymous Auth в Firebase)
             is_anon = decoded_token.get('firebase', {}).get('sign_in_provider') == 'anonymous'
             
             return User(
@@ -49,30 +59,39 @@ class FirebaseService:
                 is_anonymous=is_anon
             )
         except Exception:
-            # В случае ошибки токена (истек или подделан) откатываемся к анонимному доступу
+            # В случае ошибки (истекший токен и т.д.) не прерываем работу, 
+            # а откатываемся к гостевому доступу
             return User(uid=f"guest_{os.urandom(4).hex()}", is_anonymous=True)
 
     async def get_user_profile(self, user_id: str) -> dict:
-        """Получает данные профиля пользователя из коллекции 'users'."""
-        doc_ref = self.db.collection('users').document(user_id)
-        doc = doc_ref.get()
-        if doc.exists:
-            profile = doc.to_dict()
-            # Преобразуем объекты datetime в строки ISO для корректной передачи в JSON
-            for k, v in profile.items():
-                if isinstance(v, datetime.datetime):
-                    profile[k] = v.isoformat()
-            return profile
-        return {}
+        """
+        Получает данные профиля пользователя из коллекции 'users'.
+        Метод async для интеграции в FastAPI, хотя SDK работает синхронно.
+        """
+        try:
+            doc_ref = self.db.collection('users').document(user_id)
+            doc = doc_ref.get() # Синхронный вызов в Firebase Admin
+            if doc.exists:
+                profile = doc.to_dict()
+                # Конвертация дат в ISO формат для JSON-сериализации
+                for k, v in profile.items():
+                    if isinstance(v, datetime.datetime):
+                        profile[k] = v.isoformat()
+                return profile
+            return {}
+        except Exception as e:
+            print(f"Firestore Error: {e}")
+            return {}
 
     async def update_user_profile(self, user_id: str, data: dict) -> dict:
         """Обновляет или создает профиль пользователя в Firestore."""
         user_ref = self.db.collection('users').document(user_id)
+        # merge=True позволяет обновлять только присланные поля
         user_ref.set(data, merge=True)
         return data
 
     async def save_fcm_token(self, user_id: str, fcm_token: str) -> dict:
-        """Регистрирует токен устройства для отправки пуш-уведомлений."""
+        """Регистрирует токен устройства для пуш-уведомлений."""
         token_ref = self.db.collection('users').document(user_id).collection('fcm_tokens').document(fcm_token)
         token_ref.set({'updated_at': firestore.SERVER_TIMESTAMP}, merge=True)
         return {"status": "success"}
@@ -156,7 +175,104 @@ class VertexAISearchService:
         except Exception as e:
             raise RuntimeError(f"Техническая ошибка поиска: {str(e)}")
 
-# --- 4. Сервис для работы с платежами ---
+# --- 4. Диспетчер Единства Природы (Unified Research Service) ---
+
+class UnifiedResearchService:
+    def __init__(self, project_id: str):
+        self.project_id = project_id
+        self.client = discoveryengine.SearchServiceClient()
+        
+        # Карта всех предметных хранилищ (Data Stores)
+        self.subjects_map = {
+            "physics": "physics-store",
+            "math": "math-store",
+            "chemistry": "chemistry-store",
+            "biology": "biology-store",
+            "geography": "geography-store",
+            "it": "it-meta-store",
+            "languages": "languages-meta-store"
+        }
+        
+        # Ключевые слова для автоматического роутинга (упрощенно)
+        self.keywords = {
+            "physics": ["сила", "энергия", "квант", "давление", "движение", "атом", "диффузия"],
+            "math": ["формула", "уравнение", "график", "функция", "модель", "дифференциал"],
+            "biology": ["клетка", "организм", "жизнь", "дыхание", "фотосинтез", "белок"],
+            "chemistry": ["реакция", "молекула", "элемент", "связь", "вещество"],
+            "geography": ["земля", "планета", "климат", "атмосфера", "рельеф"]
+        }
+
+    def _get_relevant_stores(self, query: str) -> Set[str]:
+        """Определяет, какие предметы (Data Stores) нужны для ответа."""
+        query_lower = query.lower()
+        relevant = {"physics"} # Физика всегда в приоритете как фундамент
+        
+        for subject, keywords in self.keywords.items():
+            if any(kw in query_lower for kw in keywords):
+                relevant.add(subject)
+        
+        return {self.subjects_map[s] for s in relevant if s in self.subjects_map}
+
+    async def _search_in_store_async(self, query: str, store_id: str) -> Dict:
+        """Асинхронный поиск в конкретном хранилище."""
+        serving_config = self.client.serving_config_path(
+            project=self.project_id,
+            location="global",
+            data_store=store_id,
+            serving_config="default_serving_config",
+        )
+
+        content_spec = discoveryengine.SearchRequest.ContentSearchSpec(
+            summary_spec=discoveryengine.SearchRequest.ContentSearchSpec.SummarySpec(
+                summary_result_count=2,
+                include_citations=True
+            )
+        )
+
+        request = discoveryengine.SearchRequest(
+            serving_config=serving_config,
+            query=query,
+            page_size=2,
+            content_search_spec=content_spec
+        )
+
+        try:
+            # Выполняем поиск (в реальном коде используем асинхронный клиент)
+            response = self.client.search(request=request)
+            return {
+                "store": store_id,
+                "text": response.summary.summary_text if response.summary else ""
+            }
+        except Exception as e:
+            return {"store": store_id, "text": f"Ошибка поиска: {str(e)}"}
+
+    async def research_unified(self, query: str) -> UnifiedSearchResponse:
+        """
+        Главный метод синтеза: опрашивает связанные дисциплины и объединяет знания.
+        """
+        target_stores = self._get_relevant_stores(query)
+        
+        # Параллельный запуск поиска по всем релевантным базам
+        tasks = [self._search_in_store_async(query, sid) for sid in target_stores]
+        results = await asyncio.gather(*tasks)
+
+        context_data = {res["store"]: res["text"] for res in results}
+        
+        # Формирование "Синтезированного ответа"
+        # На следующем этапе здесь добавится вызов Gemini 1.5 Pro для финального склеивания
+        final_answer = f"Результаты междисциплинарного исследования:\n"
+        for store, text in context_data.items():
+            subj_name = [name for name, sid in self.subjects_map.items() if sid == store][0]
+            final_answer += f"\n--- [{subj_name.upper()}] ---\n{text}\n"
+
+        return UnifiedSearchResponse(
+            answer=final_answer,
+            relevant_subjects=list(target_stores),
+            context_data=context_data,
+            sources=[{"store": s, "status": "processed"} for s in target_stores]
+        )
+
+# --- 5. Сервис для работы с платежами ---
 
 class BillingService:
     def __init__(self):
