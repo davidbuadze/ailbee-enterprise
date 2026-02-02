@@ -1,0 +1,32 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // БАКЕТ: ailbee-books
+    // Позволяет любому авторизованному пользователю читать книги.
+    // Запись запрещена для всех клиентов (управляется только через бэкенд).
+    match /b/ailbee-books/o/{allPaths=**} {
+    allow read: if request.auth != null;
+    allow write: if false;
+    }
+
+    // БАКЕТ: ailbee-user-data
+    // Пользователи могут читать и записывать файлы ТОЛЬКО внутри своей папки (по UID).
+    match /b/ailbee-user-data/o/{userId}/{allPaths=**} {
+    allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // БАКЕТ: ailbee-data-exports
+    // Пользователи могут читать только свои сгенерированные отчеты/экспорты.
+    // Запись запрещена для клиентов.
+    match /b/ailbee-data-exports/o/{userId}/{allPaths=**} {
+     allow read: if request.auth != null && request.auth.uid == userId;
+     allow write: if false;
+    }
+
+    // Правило по умолчанию: Полный запрет на любые пути, не описанные выше.
+    match /{allPaths=**} {
+    allow read, write: if false;
+    }
+  }
+}
