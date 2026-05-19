@@ -1,7 +1,0 @@
-smtavarimain.py
-smtavarirequirements.txt
-Dockerfile
-.dockerignore
-.git
-.gitignore
-__pycache__
