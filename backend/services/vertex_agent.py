@@ -34,12 +34,12 @@ class VertexAgentService:
         conversation_path = self.client.conversation_path(
             project=self.project_id,
             location=self.location,
-            data_store=agent_id,
+            engines=agent_id,
             conversation=conversation_id if conversation_id else "-"
         )
 
         # 2. Путь к конфигурации собираем в виде чистой строки
-        serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/dataStores/{agent_id}/servingConfigs/default_config"
+        serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/engines/{agent_id}/servingConfigs/default_config"
 
         # 3. Возвращаем обратно легитимный и правильный TextInput для этой версии SDK
         text_input = discoveryengine.TextInput(input=query)
@@ -79,4 +79,3 @@ class VertexAgentService:
             raise RuntimeError(f"Vertex AI Agent API Error: {e.message} (Code: {e.code})")
         except Exception as e:
             raise RuntimeError(f"Ошибка при обработке ответа Vertex API: {str(e)}")
-            
