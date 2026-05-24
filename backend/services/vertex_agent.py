@@ -10,11 +10,10 @@ class VertexAgentService:
         что упрощает деплой в Google Cloud Run.
         """
         self.project_id = os.environ.get("GCP_PROJECT_ID", "ailbee")
-        # Для Agent Builder / Discovery Engine по умолчанию используется локация global
         self.location = os.environ.get("GCP_LOCATION", "global")
         self.client = discoveryengine.ConversationalSearchServiceClient()
 
-def converse(
+    def converse(
         self, 
         query: str, 
         agent_id: str, 
@@ -28,13 +27,10 @@ def converse(
             agent_id: Идентификатор базы знаний Агента в Google Cloud.
             conversation_id: ID существующей сессии. Если None — создается новая беседа.
         """
-        # ЗАЩИТА ОТ ОПЕЧАТОК: Автоматически удаляем квадратные скобки и пробелы, если они прилетели из фронтенда
+        # ЗАЩИТА ОТ ОПЕЧАТОК: Автоматически удаляем квадратные скобки, если они прилетели из фронтенда
         agent_id = agent_id.strip("[] ")
         
-        # 1. Путь к конфигурации собираем в виде чистой строки
-        serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/dataStores/{agent_id}/servingConfigs/default_config"
-
-        # 2. Сборка правильного пути к беседе через существующий метод conversation_path
+        # 1. Сборка правильного пути к беседе через существующий метод conversation_path.
         conversation_path = self.client.conversation_path(
             project=self.project_id,
             location=self.location,
@@ -42,13 +38,13 @@ def converse(
             conversation=conversation_id if conversation_id else "-"
         )
 
-        # 3. Путь к конфигурации собираем в виде чистой строки, избегая вызова несуществующих методов SDK
+        # 2. Путь к конфигурации собираем в виде чистой строки
         serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/dataStores/{agent_id}/servingConfigs/default_config"
 
-        # 4. Возвращаем обратно легитимный и правильный TextInput для этой версии SDK
+        # 3. Возвращаем обратно легитимный и правильный TextInput для этой версии SDK
         text_input = discoveryengine.TextInput(input=query)
 
-        # 5. Собираем объект запроса строго по Enterprise-стандарту Google
+        # 4. Собираем объект запроса строго по Enterprise-стандарту Google
         request = discoveryengine.ConverseConversationRequest(
             name=conversation_path,
             query=text_input,
@@ -62,11 +58,11 @@ def converse(
             # Извлекаем текст ответа
             reply_text = response.reply.summary.summary_text
             
-            # Получаем ID сессии (забираем только финальный уникальный хвост из полного пути)
+            # Получаем ID сессии
             next_conversation_name = response.conversation.name
             next_conversation_id = next_conversation_name.split("/")[-1]
             
-            # Извлекаем цитаты и привязку к первоисточникам (Grounding)
+            # Извлекаем цитаты
             citations = []
             if response.reply.summary.summary_with_metadata:
                 metadata = response.reply.summary.summary_with_metadata
