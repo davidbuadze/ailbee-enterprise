@@ -24,23 +24,22 @@ class VertexAgentService:
         
         Args:
             query: Вопрос студента.
-            agent_id: Идентификатор базы знаний Агента в Google Cloud.
+            agent_id: Идентификатор базы знаний Агента in Google Cloud.
             conversation_id: ID существующей сессии. Если None — создается новая беседа.
         """
         # ЗАЩИТА ОТ ОПЕЧАТОК: Автоматически удаляем квадратные скобки, если они прилетели из фронтенда
         agent_id = agent_id.strip("[] ")
         
-        # 1. РУЧНАЯ СБОРКА: Собираем путь к беседе через контур Агентов (engines) в виде чистой f-строки.
-        # Это обходит ограничение встроенного метода SDK, который умеет работать только с dataStores.
-        conversation_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/engines/{agent_id}/conversations/{conversation_id if conversation_id else '-'}"
+        # 1. Сборка пути к беседе (используем dataStores для совместимости с внутренним контуром)
+        conversation_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/dataStores/{agent_id}/conversations/{conversation_id if conversation_id else '-'}"
 
-        # 2. Путь к конфигурации собираем аналогичным образом через контур Агентов (engines)
-        serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/engines/{agent_id}/servingConfigs/default_config"
+        # 2. Путь к конфигурации (СТРОГО dataStores, как потребовала ошибка в логе)
+        serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/dataStores/{agent_id}/servingConfigs/default_config"
 
         # 3. Подготовка текстового ввода
         text_input = discoveryengine.TextInput(input=query)
 
-        # 4. Собираем объект запроса строго по Enterprise-стандарту Google для Агентов
+        # 4. Собираем объект запроса
         request = discoveryengine.ConverseConversationRequest(
             name=conversation_path,
             query=text_input,
