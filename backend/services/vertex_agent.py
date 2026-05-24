@@ -30,21 +30,17 @@ class VertexAgentService:
         # ЗАЩИТА ОТ ОПЕЧАТОК: Автоматически удаляем квадратные скобки, если они прилетели из фронтенда
         agent_id = agent_id.strip("[] ")
         
-        # 1. Сборка правильного пути к беседе через существующий метод conversation_path.
-        conversation_path = self.client.conversation_path(
-            project=self.project_id,
-            location=self.location,
-            engines=agent_id,
-            conversation=conversation_id if conversation_id else "-"
-        )
+        # 1. РУЧНАЯ СБОРКА: Собираем путь к беседе через контур Агентов (engines) в виде чистой f-строки.
+        # Это обходит ограничение встроенного метода SDK, который умеет работать только с dataStores.
+        conversation_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/engines/{agent_id}/conversations/{conversation_id if conversation_id else '-'}"
 
-        # 2. Путь к конфигурации собираем в виде чистой строки
+        # 2. Путь к конфигурации собираем аналогичным образом через контур Агентов (engines)
         serving_config_path = f"projects/{self.project_id}/locations/{self.location}/collections/default_collection/engines/{agent_id}/servingConfigs/default_config"
 
-        # 3. Возвращаем обратно легитимный и правильный TextInput для этой версии SDK
+        # 3. Подготовка текстового ввода
         text_input = discoveryengine.TextInput(input=query)
 
-        # 4. Собираем объект запроса строго по Enterprise-стандарту Google
+        # 4. Собираем объект запроса строго по Enterprise-стандарту Google для Агентов
         request = discoveryengine.ConverseConversationRequest(
             name=conversation_path,
             query=text_input,
@@ -79,3 +75,4 @@ class VertexAgentService:
             raise RuntimeError(f"Vertex AI Agent API Error: {e.message} (Code: {e.code})")
         except Exception as e:
             raise RuntimeError(f"Ошибка при обработке ответа Vertex API: {str(e)}")
+            
