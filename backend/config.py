@@ -1,4 +1,4 @@
-# app/config.py
+# backend/config.py
 import os
 from pydantic import BaseModel
 from typing import List

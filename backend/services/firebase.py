@@ -1,4 +1,4 @@
-# app/services/firebase.py
+# backend/services/firebase.py
 import firebase_admin
 from firebase_admin import auth, credentials
 from pydantic import BaseModel

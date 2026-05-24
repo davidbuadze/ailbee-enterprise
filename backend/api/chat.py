@@ -1,4 +1,4 @@
-# app/api/chat.py
+# backend/api/chat.py
 from fastapi import APIRouter, Depends, HTTPException, Header
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -18,7 +18,7 @@ vertex_agent_service = VertexAgentService()
 
 class ChatRequest(BaseModel):
     query: str = Field(..., description="Текст вопроса от студента")
-    data_store_id: str = Field(..., description="ID хранилища базы знаний в Google Cloud")
+    agent_id: str = Field(..., description="ID хранилища базы знаний в Google Cloud")
     conversation_id: Optional[str] = Field(None, description="ID сессии для продолжения диалога")
 
 class CitationMetadata(BaseModel):
@@ -62,7 +62,7 @@ async def converse_with_agent(
         # Передаем данные в сервис Vertex AI
         reply_text, next_conv_id, citations_list = vertex_agent_service.converse(
             query=request.query,
-            data_store_id=request.data_store_id,
+            agent_id=request.agent_id,
             conversation_id=request.conversation_id
         )
         
@@ -76,7 +76,11 @@ async def converse_with_agent(
     except RuntimeError as e:
         # Ошибки от Google Cloud (например, агент не найден или таймаут)
         raise HTTPException(status_code=502, detail=str(e))
-    except Exception as e:
-        # Любые непредвиденные сбои бэкенда
-        raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
+    except Exception as e:# Импортируем стандартный модуль отслеживания ошибок Linux/Python
+        import traceback
+        print(f"!!! КРИТИЧЕСКИЙ СБОЙ БЭКЕНДА: {str(e)}")
+        traceback.print_exc()  # Это отправит полный Traceback прямо в панель Cloud Run Logs!
+        
+        # Для удобства тестирования выводим реальную ошибку в тело ответа
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка бэкенда: {str(e)}")
         
