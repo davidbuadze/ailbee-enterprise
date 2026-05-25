@@ -17,19 +17,13 @@ vertex_agent_service = VertexAgentService()
 # --- 1. Pydantic-схемы для валидации данных (Контракт с FlutterFlow) ---
 
 class ChatRequest(BaseModel):
-    query: str = Field(..., description="Текст вопроса от студента")
-    agent_id: str = Field(..., description="ID хранилища базы знаний в Google Cloud")
-    conversation_id: Optional[str] = Field(None, description="ID сессии для продолжения диалога")
-
-class CitationMetadata(BaseModel):
-    source_title: str
-    uri: str
-    text_segment: str
+    query: str = Field(..., description="Текст вопроса ИИ-Агенту")
+    agent_id: str = Field(..., description="ID в Google Cloud")
+    conversation_id: Optional[str] = Field(None, description="ID сессии диалога")
 
 class ChatResponse(BaseModel):
-    reply: str = Field(..., description="Ответ, сгенерированный ИИ")
+    reply: str = Field(..., description="Ответ, сгенерированный Gemini Enterprise Агентом")
     conversation_id: str = Field(..., description="ID текущей сессии диалога")
-    citations: List[CitationMetadata] = Field(default_factory=list, description="Список первоисточников")
 
 # --- 2. Зависимость (Пограничный контроль) ---
 
@@ -60,7 +54,7 @@ async def converse_with_agent(
         print(f"[{user.uid}] Запрос к Агенту: {request.query[:50]}...")
         
         # Передаем данные в сервис Vertex AI
-        reply_text, next_conv_id, citations_list = vertex_agent_service.converse(
+        reply_text, next_conv_id = vertex_agent_service.converse_chat_agent(
             query=request.query,
             agent_id=request.agent_id,
             conversation_id=request.conversation_id
@@ -70,7 +64,6 @@ async def converse_with_agent(
         return ChatResponse(
             reply=reply_text,
             conversation_id=next_conv_id,
-            citations=[CitationMetadata(**c) for c in citations_list]
         )
 
     except RuntimeError as e:
