@@ -3,6 +3,6 @@ uvicorn==0.30.1
 pydantic==2.8.2
 firebase-admin==6.5.0
 google-cloud-firestore==2.11.1
-google-cloud-discoveryengine==0.11.2
+google-cloud-discoveryengine==0.11.4
 google-cloud-dialogflow-cx==1.42.0
 python-dotenv==1.0.1

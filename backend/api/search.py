@@ -36,6 +36,8 @@ async def search_in_library(
     user: AuthenticatedUser = Depends(get_current_user)
 ):
     try:
+        print(f"[{user.uid}] Поиск по книгам: {request.query[:50]}...")
+        
         reply_text, next_conv_id, citations_list = vertex_agent_service.converse_search_rag(
             query=request.query,
             agent_id=request.agent_id,
@@ -47,10 +49,10 @@ async def search_in_library(
             citations=[CitationMetadata(**c) for c in citations_list]
         )
     except RuntimeError as e:
-        # Ошибки от Google Cloud (например, агент не найден или таймаут)
         raise HTTPException(status_code=502, detail=str(e))
     except Exception as e:
         import traceback
-        print(f"!!! КРИТИЧЕСКИЙ СБОЙ БЭКЕНДА: {str(e)}")
+        print(f"!!! КРИТИЧЕСКИЙ СБОЙ БЭКЕНДА ПОИСКА: {str(e)}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка бэкенда: {str(e)}")
+        
