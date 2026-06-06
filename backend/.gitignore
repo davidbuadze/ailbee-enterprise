@@ -1,0 +1,13 @@
+# Секреты и конфигурация
+config.py
+.env
+*.json
+
+# Кэш Python и виртуальное окружение
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/
+.idea/
+.vscode/

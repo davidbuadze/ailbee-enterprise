@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from pydantic import BaseModel, Field
 from typing import Optional
-
 from services.firebase import FirebaseService, AuthenticatedUser
 from services.vertex_agent import VertexAgentService
 
@@ -10,7 +9,7 @@ firebase_service = FirebaseService()
 vertex_agent_service = VertexAgentService()
 
 class ChatRequest(BaseModel):
-    query: str = Field(..., description="Текст вопроса ИИ-Агенту")
+    prompt: str = Field(..., description="Текст промпта ИИ-Агенту")
     agent_id: str = Field(..., description="ID в Google Cloud (App ID)")
     conversation_id: Optional[str] = Field(None, description="ID сессии диалога")
 
@@ -30,16 +29,13 @@ async def converse_with_agent(
     user: AuthenticatedUser = Depends(get_current_user)
 ):
     try:
-        print(f"[{user.uid}] Запрос к Агенту: {request.query[:50]}...")
-        
+        print(f"[{user.uid}] Запрос к Агенту (Prompt): {request.prompt[:50]}...")
         reply_text, next_conv_id = vertex_agent_service.converse_chat_agent(
-            query=request.query,
+            query=request.prompt,
             agent_id=request.agent_id,
             conversation_id=request.conversation_id
         )
-        
         return ChatResponse(reply=reply_text, conversation_id=next_conv_id)
-
     except RuntimeError as e:
         raise HTTPException(status_code=502, detail=str(e))
     except Exception as e:

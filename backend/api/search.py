@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from pydantic import BaseModel, Field
 from typing import Optional, List
-
 from services.firebase import FirebaseService, AuthenticatedUser
 from services.vertex_agent import VertexAgentService
 
@@ -36,8 +35,7 @@ async def search_in_library(
     user: AuthenticatedUser = Depends(get_current_user)
 ):
     try:
-        print(f"[{user.uid}] Поиск по книгам: {request.query[:50]}...")
-        
+        print(f"[{user.uid}] Поиск по книгам (Query): {request.query[:50]}...")
         reply_text, next_conv_id, citations_list = vertex_agent_service.converse_search_rag(
             query=request.query,
             agent_id=request.agent_id,
