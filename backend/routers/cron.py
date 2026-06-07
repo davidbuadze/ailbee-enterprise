@@ -15,14 +15,13 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
         raise HTTPException(status_code=403, detail="Access Denied")
     
     try:
-        # 1. Рассчитываем временные пороги (30 и 180 дней)
         now = datetime.now(timezone.utc)
         threshold_30_days = now - timedelta(days=30)
         threshold_180_days = now - timedelta(days=180)
 
         users_ref = db.collection("users")
 
-        # 2. Находим и переводим глубоко пассивных пользователей (более 180 дней)
+        # Находим и переводим глубоко пассивных пользователей
         passive_180_query = users_ref.where("last_activity", "<=", threshold_180_days).where("status", "==", "active")
         docs_180 = passive_180_query.stream()
         count_180 = 0
@@ -30,7 +29,7 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
             doc.reference.update({"status": "passive_180"})
             count_180 += 1
 
-        # 3. Находим умеренно пассивных пользователей (от 30 до 180 дней)
+        # Находим умеренно пассивных пользователей
         passive_30_query = (
             users_ref
             .where("last_activity", "<=", threshold_30_days)
@@ -43,7 +42,6 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
             doc.reference.update({"status": "passive_30"})
             count_30 += 1
 
-        # 4. Возвращаем успешный ответ ТОЛЬКО после того, как все циклы завершились!
         return {
             "status": "success",
             "message": "User retention statuses synchronized successfully.",
@@ -52,6 +50,5 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
         }
 
     except Exception as e:
-        # Если Firestore выбросит ошибку (например, потребует составить составной индекс),
-        # мы мгновенно увидим точную причину прямо в ответе curl
         return {"status": "error", "details": str(e)}
+        
