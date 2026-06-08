@@ -1,23 +1,15 @@
 steps:
-  # Шаг 1: Собираем Docker-образ по чистому пути
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build', 
-      '-t', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA', 
-      '-f', 'backend/Dockerfile', 
-      'backend'
-    ]
-
-  # Шаг 2: Деплоим с флагами отладки
+  # Мы объединяем сборку и деплой в один нативный шаг.
+  # gcloud сам соберет контекст папки backend, отправит его в Artifact Registry и сразу развернет в Cloud Run без конфликтов прав!
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args: [
       'run', 'deploy', 'ailbee-enterprise-hub',
-      '--image', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA',
+      '--source', 'backend',                                # Указываем папку с кодом и Dockerfile
+      '--repo', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise', # Привязываем к нашему репозиторию
       '--region', 'us-central1',
       '--project', 'ailbee',
-      '--no-traffic',          # Не переключаем трафик, чтобы обойти зависание
-      '--verbosity=debug'      # Включаем максимальную детализацию логов
+      '--no-traffic'
     ]
 
 options:
