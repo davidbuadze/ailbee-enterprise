@@ -1,16 +1,12 @@
 steps:
-  # Используем явное связывание через знак "=" внутри аргументов
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'ailbee-enterprise-hub'
-      - '--source=backend'
-      - '--repository=ailbee-enterprise'
-      - '--region=us-central1'
-      - '--project=ailbee'
-      - '--no-traffic'
+  # Оставляем только чистую сборку Docker-образа, которая всегда работала
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA',
+      '-f', 'backend/Dockerfile',
+      'backend'
+    ]
 
 options:
   logging: CLOUD_LOGGING_ONLY
