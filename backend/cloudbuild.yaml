@@ -1,12 +1,10 @@
 steps:
-  # Мы объединяем сборку и деплой в один нативный шаг.
-  # gcloud сам соберет контекст папки backend, отправит его в Artifact Registry и сразу развернет в Cloud Run без конфликтов прав!
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args: [
       'run', 'deploy', 'ailbee-enterprise-hub',
-      '--source', 'backend',                                # Указываем папку с кодом и Dockerfile
-      '--repo', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise', # Привязываем к нашему репозиторию
+      '--source', 'backend',
+      '--repo', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise',
       '--region', 'us-central1',
       '--project', 'ailbee',
       '--no-traffic'
