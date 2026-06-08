@@ -1,5 +1,5 @@
 steps:
-  # Запускаем сборку по вашему Dockerfile
+  # Шаг 1: Собираем Docker-образ из папки backend
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
@@ -8,6 +8,16 @@ steps:
       'backend'
     ]
 
-# Напрямую приказываем системе использовать только Cloud Logging (Вариант С из ошибки!)
+  # Шаг 2: Автоматически деплоим этот образ в Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'run', 'deploy', 'ailbee-enterprise-hub', # имя вашего сервиса в Cloud Run
+      '--image', 'us-central1-docker.pkg.dev/ailbee/cloud-run-source-deploy/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA',
+      '--region', 'us-central1',
+      '--project', 'ailbee'
+    ]
+
 options:
   logging: CLOUD_LOGGING_ONLY
+  
