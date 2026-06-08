@@ -13,7 +13,7 @@ api_key_header = APIKeyHeader(name="X-Cron-Backdoor", auto_error=False)
 async def sync_user_statuses(token: str = Security(api_key_header)):
     if token != settings.CRON_SECRET_TOKEN:
         raise HTTPException(status_code=403, detail="Access Denied")
-    
+
     try:
         now = datetime.now(timezone.utc)
         threshold_30_days = now - timedelta(days=30)
@@ -21,7 +21,7 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
 
         users_ref = db.collection("users")
 
-        # Находим и переводим глубоко пассивных пользователей
+        # 1. Находим и переводим глубоко пассивных пользователей (более 180 дней)
         passive_180_query = users_ref.where("last_activity", "<=", threshold_180_days).where("status", "==", "active")
         docs_180 = passive_180_query.stream()
         count_180 = 0
@@ -29,7 +29,7 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
             doc.reference.update({"status": "passive_180"})
             count_180 += 1
 
-        # Находим умеренно пассивных пользователей
+        # 2. Находим умеренно пассивных пользователей (от 30 до 180 дней)
         passive_30_query = (
             users_ref
             .where("last_activity", "<=", threshold_30_days)
@@ -50,5 +50,5 @@ async def sync_user_statuses(token: str = Security(api_key_header)):
         }
 
     except Exception as e:
+        # Если код упадет (например, из-за индексов базы данных), мы увидим точную причину
         return {"status": "error", "details": str(e)}
-        
