@@ -1,10 +1,11 @@
 steps:
+  # Используем нативный деплой gcloud, который сам упакует и свяжет образ
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args: [
       'run', 'deploy', 'ailbee-enterprise-hub',
       '--source', 'backend',
-      '--repo', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise',
+      '--repository', 'ailbee-enterprise',
       '--region', 'us-central1',
       '--project', 'ailbee',
       '--no-traffic'
@@ -12,3 +13,4 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  
