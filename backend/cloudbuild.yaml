@@ -1,19 +1,19 @@
 steps:
-  # Шаг 1: Собираем Docker-образ из папки backend
+  # Шаг 1: Собираем Docker-образ по прямому стандартному пути
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
-      '-t', 'us-central1-docker.pkg.dev/ailbee/cloud-run-source-deploy/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA', 
+      '-t', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA', 
       '-f', 'backend/Dockerfile', 
       'backend'
     ]
 
-  # Шаг 2: Автоматически деплоим этот образ в Cloud Run
+  # Шаг 2: Деплоим этот образ напрямую в Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args: [
-      'run', 'deploy', 'ailbee-enterprise-hub', # имя вашего сервиса в Cloud Run
-      '--image', 'us-central1-docker.pkg.dev/ailbee/cloud-run-source-deploy/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA',
+      'run', 'deploy', 'ailbee-enterprise-hub',
+      '--image', 'us-central1-docker.pkg.dev/ailbee/ailbee-enterprise/ailbee-enterprise-hub:$COMMIT_SHA',
       '--region', 'us-central1',
       '--project', 'ailbee'
     ]
