@@ -13,3 +13,6 @@ COPY . .
 
 # Запускаем uvicorn напрямую из корня контейнера
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+
+# Указываем Cloud Build, куда сохранять логи сборки этого контейнера
+LABEL com.google.cloudbuild.logs_bucket="gs://ailbee-cloudbuild-logs"
