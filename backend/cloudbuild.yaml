@@ -1,16 +1,16 @@
 steps:
-  # Используем нативный деплой gcloud, который сам упакует и свяжет образ
+  # Используем явное связывание через знак "=" внутри аргументов
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
-    args: [
-      'run', 'deploy', 'ailbee-enterprise-hub',
-      '--source', 'backend',
-      '--repository', 'ailbee-enterprise',
-      '--region', 'us-central1',
-      '--project', 'ailbee',
-      '--no-traffic'
-    ]
+    args:
+      - 'run'
+      - 'deploy'
+      - 'ailbee-enterprise-hub'
+      - '--source=backend'
+      - '--repository=ailbee-enterprise'
+      - '--region=us-central1'
+      - '--project=ailbee'
+      - '--no-traffic'
 
 options:
   logging: CLOUD_LOGGING_ONLY
-  
