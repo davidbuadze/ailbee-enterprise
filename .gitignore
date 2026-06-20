@@ -1,8 +1,43 @@
+# --- Python (FastAPI) ---
 .env
 .cache/
 __pycache__/
 *.pyc
 .idea/
 .vscode/
+*.tar.gz
+
+# --- General Flutter / Dart ---
 build/
 .dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# --- Android Specific ---
+.gradle/
+local.properties
+**/AndroidStudio/
+*.keystore
+*.jks
+*.apk
+*.aab
+
+# --- iOS / macOS Specific ---
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.podspec
+DerivedData/
+.DS_Store
+*.xcworkspace
+
+# --- Windows Specific ---
+build/windows/
+x64/
+*.exe
+*.dll
+
+# --- Web Specific ---
+build/web/
