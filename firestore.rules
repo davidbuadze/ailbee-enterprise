@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ ===
+    // Поддерживаем оба стандарта (FlutterFlow 'users' и кастомный 'ailbee-user-data')
+    // Пользователь может читать и обновлять свой профиль, но не может удалить его напрямую (только через бэкенд)
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create, delete: if false; 
+    }
+    match /ailbee-user-data/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create, delete: if false;
+    }
+
+    // === БИБЛИОТЕКА (КНИГИ) ===
+    // Только чтение для авторизованных клиентов. Записью управляет Python-бэкенд.
+    match /books/{document} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /ailbee-books/{document} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // === СПРАВОЧНИКИ И ДИАЛОГИ ===
+    match /education_levels/{document} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /subjects/{document} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /conversations/{document} {
+      allow create, read, update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // === СИСТЕМНЫЕ ЛОГИ (СТРОГО БЭКЕНД) ===
+    // Доступ клиентам полностью закрыт.
+    match /audit_logs/{document=**} {
+      allow read, write: if false;
+    }
+    match /onUserDeleted/{document=**} {
+      allow read, write: if false;
+    }
+    match /export_logs/{document=**} {
+      allow read, write: if false;
+    }
+
+    // === ПРАВИЛО ПО УМОЛЧАНИЮ ===
+    // Глухая защита от любых несанкционированных путей + доступ для системного аккаунта FlutterFlow
+    match /{document=**} {
+      allow read, write: if request.auth != null && request.auth.token.email.matches("firebase@flutterflow.io");
+    }
+  }
+}
