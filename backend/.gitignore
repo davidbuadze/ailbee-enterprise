@@ -1,0 +1,22 @@
+# Python кэш и виртуальные окружения
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.cache/
+*.pyc
+.idea/
+.vscode/
+*.tar.gz
+
+# Логи и кэш Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Настройки редакторов
+.vscode/
+.idea/
+.DS_Store
