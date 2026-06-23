@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "991527374957",
+    "project_id": "ailbee",
+    "storage_bucket": "ailbee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991527374957:android:29d0146b47e8f583392f64",
+        "android_client_info": {
+          "package_name": "ailbee.ff.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991527374957-ovqfnr6kpafvdbb46ekcke5s2o73fal7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ailbee.ff.app",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "991527374957-ir1uv69fb9pvl3hnhamtr69f8go1kkig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBQMBAZzlA8CgDkxvj8S1WFZdeXKWUZHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104451678516878407677",
+              "client_type": 3
+            },
+            {
+              "client_id": "991527374957-8a06mhinnjudra23s6qjj4d7u7qnf4l6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ailbee.ff.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
