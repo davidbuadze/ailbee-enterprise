@@ -23,7 +23,9 @@ class Settings(BaseSettings):
         "https://app.flutterflow.io",
         "https://ailbee.web.app",
         "https://ailbee.firebaseapp.com",
+        "https://ailbee-ff-app-0ty350.flutterflow.app",
         "http://localhost:3000",
+        "http://localhost:5000",
         "http://localhost:8080",
         "http://localhost:9005"
     ]
