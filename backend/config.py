@@ -1,6 +1,7 @@
 # config.py
 # Системная конфигурация Ailbee Enterprise Hub
 import os
+from typing import List, Union
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -12,14 +13,19 @@ class Settings(BaseSettings):
     # Идентификатор приложения для соблюдения правила путей RULE 1
     APP_ID: str = os.getenv("APP_ID", "ailbee-app-prod")
     
+    # Идентификаторы агентов по умолчанию
+    DEFAULT_SCHOOL_AGENT_ID: str = os.getenv("DEFAULT_SCHOOL_AGENT_ID", "school_public_agent")
+    DEFAULT_RESEARCH_AGENT_ID: str = os.getenv("DEFAULT_RESEARCH_AGENT_ID", "core_assistant")
+    
     # Ключ безопасности для внутренних Cron-сервисов
     CRON_SECRET_TOKEN: str = os.getenv("CRON_SECRET_TOKEN", "cron_secret_bypass_key")
     
-    # Ссылка на локальный/облачный сервер Gemma (Ollama API)
+    # Ссылка на локальный/облачный сервер Gemma (Ollama API / Cloud Run)
     GEMMA_SERVER_URL: str = os.getenv("GEMMA_SERVER_URL", "http://localhost:11434")
     
-    # Разрешенные адреса для CORS-политики (включая FlutterFlow)
-    ALLOWED_ORIGINS: list = [
+    # Разрешенные адреса для CORS-политики (включая FlutterFlow и локальную разработку)
+    ALLOWED_ORIGINS: List[str] = [
+        "*",  # Разрешает запросы со всех доменов (включая тестовый веб-плейграунд FlutterFlow)
         "https://app.flutterflow.io",
         "https://ailbee.web.app",
         "https://ailbee.firebaseapp.com",

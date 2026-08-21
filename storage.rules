@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 1. КНИГИ И КАТАЛОГИ
+    match /ailbee-books/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 2. ФАЙЛЫ ПОЛЬЗОВАТЕЛЕЙ
+    match /ailbee-user-data/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 3. ЭКСПОРТ И ОТЧЕТЫ
+    match /ailbee-data-exports/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    // 4. АВАТАРКИ ПОЛЬЗОВАТЕЛЕЙ
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 5. ЗАПРЕТ НА ВСЕ ОСТАЛЬНЫЕ ПУТИ
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
