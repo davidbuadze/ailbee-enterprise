@@ -16,12 +16,15 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.2'
-          channel: 'stable'
 
       - name: Build Web App
         run: |
           flutter pub get
-          flutter build web --release
+          flutter build web --release --no-tree-shake-icons
+
+      - name: Create firebase.json
+        run: |
+          echo '{"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]}}' > firebase.json
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
