@@ -15,32 +15,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.3'
-
-      - name: Lock All Dependencies for Flutter 3.24.3
-        run: |
-          python3 -c "
-          with open('pubspec.yaml', 'r') as f:
-              content = f.read()
-          
-          if 'dependency_overrides:' in content:
-              content = content.split('dependency_overrides:')[0]
-          
-          overrides = '''
-          dependency_overrides:
-            meta: 1.15.0
-            intl: 0.19.0
-            collection: 1.18.0
-            device_info_plus: 10.1.0
-            url_launcher_web: 2.3.0
-            url_launcher_android: 6.3.0
-            shared_preferences_android: 2.3.0
-            google_fonts: 6.2.1
-            http: 1.2.1
-          '''
-          with open('pubspec.yaml', 'w') as f:
-              f.write(content.strip() + '\n' + overrides)
-          "
+          channel: 'stable'
 
       - name: Build Web App
         run: |
@@ -49,7 +24,24 @@ jobs:
 
       - name: Create firebase.json
         run: |
-          echo '{"hosting":{"public":"build/web","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"**","destination":"/index.html"}]}}' > firebase.json
+          cat << 'EOF' > firebase.json
+          {
+            "hosting": {
+              "public": "build/web",
+              "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+              "rewrites": [{"source": "**", "destination": "/index.html"}],
+              "headers": [
+                {
+                  "source": "**",
+                  "headers": [
+                    {"key": "Cross-Origin-Opener-Policy", "value": "same-origin"},
+                    {"key": "Cross-Origin-Embedder-Policy", "value": "credentialless"}
+                  ]
+                }
+              ]
+            }
+          }
+          EOF
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
