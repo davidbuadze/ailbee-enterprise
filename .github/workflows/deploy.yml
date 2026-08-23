@@ -17,6 +17,12 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Resolve Dependency Conflicts
+        run: |
+          echo "" >> pubspec.yaml
+          echo "dependency_overrides:" >> pubspec.yaml
+          echo "  intl: ^0.20.3" >> pubspec.yaml
+
       - name: Build Web App
         run: |
           flutter pub get
