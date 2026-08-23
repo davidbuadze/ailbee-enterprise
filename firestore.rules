@@ -2,48 +2,49 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 1. ПУБЛИЧНЫЙ КАТАЛОГ
+    // 1. ПУБЛИЧНЫЕ КАТАЛОГИ (Доступны гостям без авторизации)
     match /books/{document} { allow read: if true; allow write: if false; }
     match /ailbee-books/{document} { allow read: if true; allow write: if false; }
     match /education_levels/{document} { allow read: if true; allow write: if false; }
     match /subjects/{document} { allow read: if true; allow write: if false; }
 
-    // 2. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ
+    // 2. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ (Исправлены users и уязвимости)
     match /users/{userId} {
       allow read, update: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null; // Разрешено для регистрации
-      allow delete: if false; 
-    }
-    match /ailbee-user-data/{document} {
       allow create: if request.auth != null;
-      allow read, update: if request.auth != null && (request.auth.uid == document || request.auth.uid == resource.data.uid);
       allow delete: if false;
     }
 
-    // 3. ЗАДАЧИ И КАЛЕНДАРЬ
-    match /tasks/{document} {
+    match /ailbee-user-data/{document} {
       allow create: if request.auth != null;
-      allow read, update, delete: if request.auth != null && 
-        (resource.data.user_ref.id == request.auth.uid || 
-         resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid));
+      allow read, update: if request.auth != null && 
+        (request.auth.uid == document || request.auth.uid == resource.data.uid);
+      allow delete: if false;
     }
 
-    // 4. ДИАЛОГИ И ИССЛЕДОВАНИЯ
+    // 3. ЗАДАЧИ И КАЛЕНДАРЬ (Защищена создаваемая ссылка)
+    match /tasks/{document} {
+      allow create: if request.auth != null && 
+        (request.resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid) ||
+         request.resource.data.user_ref.id == request.auth.uid);
+      allow read, update, delete: if request.auth != null && 
+        (resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid) ||
+         resource.data.user_ref.id == request.auth.uid);
+    }
+
+    // 4. ДИАЛОГИ И ЛОГИ
     match /conversations/{document} {
       allow create: if request.auth != null;
       allow read, update: if request.auth != null && request.auth.uid == resource.data.user_id;
       allow delete: if false;
     }
 
-    // 5. СИСТЕМНЫЕ ЛОГИ И АУДИТ
-    match /audit_logs/{document=**} { allow read, write: if false; }
-    match /onUserDeleted/{document=**} { allow read, write: if false; }
     match /export_logs/{document} {
       allow create: if request.auth != null;
       allow read, update, delete: if false;
     }
 
-    // 6. СЛУЖЕБНЫЙ ДОСТУП FLUTTERFLOW
+    // 5. СЛУЖЕБНЫЙ ДОСТУП FLUTTERFLOW
     match /{document=**} {
       allow read, write: if request.auth != null && 
         request.auth.token.email != null && 
