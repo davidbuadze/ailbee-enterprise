@@ -19,9 +19,16 @@ jobs:
 
       - name: Resolve Dependency Conflicts
         run: |
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  intl: ^0.20.3" >> pubspec.yaml
+          python3 -c "
+          with open('pubspec.yaml', 'r') as f:
+              content = f.read()
+          if 'dependency_overrides:' in content:
+              content = content.replace('dependency_overrides:', 'dependency_overrides:\n  intl: ^0.20.3')
+          else:
+              content += '\ndependency_overrides:\n  intl: ^0.20.3\n'
+          with open('pubspec.yaml', 'w') as f:
+              f.write(content)
+          "
 
       - name: Build Web App
         run: |
