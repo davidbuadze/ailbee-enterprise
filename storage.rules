@@ -1,31 +1,33 @@
 rules_version = '2';
 service firebase.storage {
-  match /b/{bucket}/o {
 
-    // 1. КНИГИ И КАТАЛОГИ
-    match /ailbee-books/{allPaths=**} {
+  // 1. БАКЕТ КНИГ (gs://ailbee-books)
+  match /b/ailbee-books/o {
+    match /{allPaths=**} {
       allow read: if true;
       allow write: if false;
     }
+  }
 
-    // 2. ФАЙЛЫ ПОЛЬЗОВАТЕЛЕЙ
-    match /ailbee-user-data/{userId}/{allPaths=**} {
+  // 2. БАКЕТ ПОЛЬЗОВАТЕЛЬСКИХ ДАННЫХ (gs://ailbee-user-data)
+  match /b/ailbee-user-data/o {
+    match /{userId}/{allPaths=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
+  }
 
-    // 3. ЭКСПОРТ И ОТЧЕТЫ
-    match /ailbee-data-exports/{userId}/{allPaths=**} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false;
-    }
-
-    // 4. АВАТАРКИ ПОЛЬЗОВАТЕЛЕЙ
+  // 3. ОСНОВНОЙ БАКЕТ ПО УМОЛЧАНИЮ (gs://ailbee.firebasestorage.app)
+  match /b/{bucket}/o {
     match /users/{userId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // 5. ЗАПРЕТ НА ВСЕ ОСТАЛЬНЫЕ ПУТИ
+    match /ailbee-data-exports/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }
