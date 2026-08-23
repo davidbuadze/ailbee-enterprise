@@ -19,8 +19,6 @@ void main() async {
 
   await initFirebase();
 
-  await FlutterFlowTheme.initialize();
-
   await FFLocalizations.initialize();
 
   final appState = FFAppState(); // Initialize FFAppState
@@ -53,7 +51,8 @@ class MyAppScrollBehavior extends MaterialScrollBehavior {
 class _MyAppState extends State<MyApp> {
   Locale? _locale = FFLocalizations.getStoredLocale();
 
-  ThemeMode _themeMode = FlutterFlowTheme.themeMode;
+  ThemeMode _themeMode = ThemeMode.system;
+  double _textScaleFactor = FlutterFlowTheme.textScaleFactor;
 
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
@@ -105,8 +104,32 @@ class _MyAppState extends State<MyApp> {
 
   void setThemeMode(ThemeMode mode) => safeSetState(() {
         _themeMode = mode;
-        FlutterFlowTheme.saveThemeMode(mode);
       });
+
+  void setTextScaleFactor(double updatedFactor) {
+    if (updatedFactor < FlutterFlowTheme.minTextScaleFactor ||
+        updatedFactor > FlutterFlowTheme.maxTextScaleFactor) {
+      return;
+    }
+    safeSetState(() {
+      _textScaleFactor = updatedFactor;
+    });
+
+    FlutterFlowTheme.saveTextScaleFactor(_textScaleFactor);
+  }
+
+  void incrementTextScaleFactor(double incrementValue) {
+    final updatedFactor = _textScaleFactor + incrementValue;
+    if (updatedFactor < FlutterFlowTheme.minTextScaleFactor ||
+        updatedFactor > FlutterFlowTheme.maxTextScaleFactor) {
+      return;
+    }
+    safeSetState(() {
+      _textScaleFactor = updatedFactor;
+    });
+
+    FlutterFlowTheme.saveTextScaleFactor(_textScaleFactor);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,33 +156,33 @@ class _MyAppState extends State<MyApp> {
         scrollbarTheme: ScrollbarThemeData(
           thumbColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.dragged)) {
-              return Color(4283564287);
+              return Color(4279370016);
             }
             if (states.contains(WidgetState.hovered)) {
-              return Color(4283564287);
+              return Color(4279370016);
             }
-            return Color(4283564287);
+            return Color(4279370016);
           }),
         ),
         colorSchemeSeed: FlutterFlowTheme.lightColorSchemeSeed,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        scrollbarTheme: ScrollbarThemeData(
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.dragged)) {
-              return Color(4283564287);
-            }
-            if (states.contains(WidgetState.hovered)) {
-              return Color(4283564287);
-            }
-            return Color(4283564287);
-          }),
-        ),
-        colorSchemeSeed: FlutterFlowTheme.darkColorSchemeSeed,
-      ),
       themeMode: _themeMode,
       routerConfig: _router,
+      builder: (_, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler:
+              _textScaleFactor == FlutterFlowTheme.defaultTextScaleFactor
+                  ? MediaQuery.of(context).textScaler.clamp(
+                        minScaleFactor: FlutterFlowTheme.minTextScaleFactor,
+                        maxScaleFactor: FlutterFlowTheme.maxTextScaleFactor,
+                      )
+                  : TextScaler.linear(_textScaleFactor).clamp(
+                      minScaleFactor: FlutterFlowTheme.minTextScaleFactor,
+                      maxScaleFactor: FlutterFlowTheme.maxTextScaleFactor,
+                    ),
+        ),
+        child: child!,
+      ),
     );
   }
 }

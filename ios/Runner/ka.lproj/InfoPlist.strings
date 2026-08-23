@@ -1,1 +1,2 @@
-
+NSCalendarsUsageDescription = "თქვენი გეგმების ავტომატური ჩანაწერების ნებართვა";
+NSCalendarsFullAccessUsageDescription = "კალენდარის წარმოების ნებართვა";

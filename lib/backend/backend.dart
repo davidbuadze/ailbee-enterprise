@@ -11,6 +11,7 @@ import 'schema/subjects_record.dart';
 import 'schema/export_logs_record.dart';
 import 'schema/ailbee_user_data_record.dart';
 import 'schema/ailbee_books_record.dart';
+import 'schema/tasks_record.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart' hide Order;
@@ -25,6 +26,7 @@ export 'schema/subjects_record.dart';
 export 'schema/export_logs_record.dart';
 export 'schema/ailbee_user_data_record.dart';
 export 'schema/ailbee_books_record.dart';
+export 'schema/tasks_record.dart';
 
 /// Functions to query ConversationsRecords (as a Stream and as a Future).
 Future<int> queryConversationsRecordCount({
@@ -243,6 +245,43 @@ Future<List<AilbeeBooksRecord>> queryAilbeeBooksRecordOnce({
     queryCollectionOnce(
       AilbeeBooksRecord.collection,
       AilbeeBooksRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query TasksRecords (as a Stream and as a Future).
+Future<int> queryTasksRecordCount({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      TasksRecord.collection,
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<TasksRecord>> queryTasksRecord({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      TasksRecord.collection,
+      TasksRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<TasksRecord>> queryTasksRecordOnce({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      TasksRecord.collection,
+      TasksRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,

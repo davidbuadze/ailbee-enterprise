@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
@@ -74,14 +76,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? WiggetPageWidget() : AuthPageWidget(),
+      errorBuilder: (context, state) => appStateNotifier.loggedIn
+          ? SchoolModuleWidget()
+          : WelcomePageWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) =>
-              appStateNotifier.loggedIn ? WiggetPageWidget() : AuthPageWidget(),
+          builder: (context, _) => appStateNotifier.loggedIn
+              ? SchoolModuleWidget()
+              : WelcomePageWidget(),
           routes: [
             FFRoute(
               name: AuthPageWidget.routeName,
@@ -89,10 +93,49 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => AuthPageWidget(),
             ),
             FFRoute(
-              name: WiggetPageWidget.routeName,
-              path: WiggetPageWidget.routePath,
+              name: DashboardWidget.routeName,
+              path: DashboardWidget.routePath,
               requireAuth: true,
-              builder: (context, params) => WiggetPageWidget(),
+              builder: (context, params) => DashboardWidget(),
+            ),
+            FFRoute(
+              name: CreateAccountPageWidget.routeName,
+              path: CreateAccountPageWidget.routePath,
+              builder: (context, params) => CreateAccountPageWidget(),
+            ),
+            FFRoute(
+              name: WelcomePageWidget.routeName,
+              path: WelcomePageWidget.routePath,
+              builder: (context, params) => WelcomePageWidget(),
+            ),
+            FFRoute(
+              name: ProfilePageWidget.routeName,
+              path: ProfilePageWidget.routePath,
+              requireAuth: true,
+              builder: (context, params) => ProfilePageWidget(),
+            ),
+            FFRoute(
+              name: PdfReaderPageWidget.routeName,
+              path: PdfReaderPageWidget.routePath,
+              requireAuth: true,
+              builder: (context, params) => PdfReaderPageWidget(
+                pdfUrl: params.getParam(
+                  'pdfUrl',
+                  ParamType.String,
+                ),
+              ),
+            ),
+            FFRoute(
+              name: PaywallWidget.routeName,
+              path: PaywallWidget.routePath,
+              requireAuth: true,
+              builder: (context, params) => PaywallWidget(),
+            ),
+            FFRoute(
+              name: SchoolModuleWidget.routeName,
+              path: SchoolModuleWidget.routePath,
+              requireAuth: true,
+              builder: (context, params) => SchoolModuleWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),
@@ -214,6 +257,7 @@ class FFParameters {
     ParamType type, {
     bool isList = false,
     List<String>? collectionNamePath,
+    StructBuilder<T>? structBuilder,
   }) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
@@ -232,6 +276,7 @@ class FFParameters {
       type,
       isList,
       collectionNamePath: collectionNamePath,
+      structBuilder: structBuilder,
     );
   }
 }
@@ -265,7 +310,7 @@ class FFRoute {
 
           if (requireAuth && !appStateNotifier.loggedIn) {
             appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
-            return '/AuthPage';
+            return '/welcomePage';
           }
           return null;
         },
@@ -279,14 +324,14 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF5200FF),
-                      ),
+              ? Container(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/1001.webp',
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 )

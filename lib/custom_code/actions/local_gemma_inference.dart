@@ -1,5 +1,7 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
+import '/actions/actions.dart' as action_blocks;
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -7,22 +9,13 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// local_gemma_inference.dart
-// Симулятор локального вывода Gemma 2B с использованием Google AI Edge SDK и MediaPipe.
-
 import 'dart:async';
 
 Future<String> localGemmaInference(
   String prompt,
   String systemInstruction,
 ) async {
-  // При наличии Google AI Edge SDK в вашем проекте Flutter:
-  // final model = await MediaPipeLLMInference.create(modelPath: 'assets/gemma-2b-it-gpu.bin');
-  // final response = await model.generateResponse(prompt: "$systemInstruction\n$prompt");
-  // return response;
-
-  await Future.delayed(
-      const Duration(milliseconds: 800)); // Имитация аппаратного инференса GPU
+  await Future.delayed(const Duration(milliseconds: 800));
 
   final cleanPrompt = prompt.toLowerCase();
   if (cleanPrompt.contains("диффуз")) {

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Ailbee</string>
+	<string>12.com.ge</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -43,7 +43,7 @@
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
         <key>CFBundleURLName</key>
-        <string>ailbee.web.app</string>
+        <string>ailbeeffapp.com</string>
         <key>CFBundleURLSchemes</key>
         <array>
         <string>ailbeeffapp</string>
@@ -60,7 +60,12 @@
 	<true/>
 
 
-
+	<key>NSCalendarsUsageDescription</key>
+    <string>კალენდარის წვდომის ნებართვა თქვენი ჩანაწერების შესანახად</string>
+	<key>NSCalendarsUsageDescription</key>
+    <string>თქვენი გეგმების ავტომატური ჩანაწერების ნებართვა</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+    <string>კალენდარის წარმოების ნებართვა</string>
 
 
 

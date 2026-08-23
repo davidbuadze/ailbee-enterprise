@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import '/flutter_flow/flutter_flow_util.dart';
@@ -26,7 +27,7 @@ class AgentsCallGroupAPIGroup {
 class ResearchConverseCall {
   Future<ApiCallResponse> call({
     String? researchContext = '',
-    String? agentId = '',
+    String? agentId = 'research_expert_agent',
     String? conversationId = '',
     String? userMessage = '',
     String? targetQuery = '',
@@ -38,11 +39,11 @@ class ResearchConverseCall {
 
     final ffApiRequestBody = '''
 {
-  "prompt": "[researchContext]",
-  "agent_id": "${agentId}",
-  "conversation_id": "[conversation_id]",
-  "message": "[userMessage]",
-  "query": "[targetQuery]"
+  "prompt": "\$.researchContext",
+  "agent_id": "\$.agent_id",
+  "conversation_id": "\$.conversation_id",
+  "message": "\$.userMessage",
+  "query": "\$.targetQuery"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'ResearchConverse',
@@ -63,24 +64,37 @@ class ResearchConverseCall {
       alwaysAllowBody: false,
     );
   }
+
+  dynamic executionmode(dynamic response) => getJsonField(
+        response,
+        r'''$.execution_mode''',
+      );
 }
 
 class BookSearchCall {
   Future<ApiCallResponse> call({
-    String? query = '',
-    String? agentId = '',
-    String? conversationId = '',
+    String? queryVariable = '',
+    String? agentId = 'school_public_agent',
+    String? conversationIdVariable = '',
+    String? bookContextVariable = 'none',
+    List<String>? learnedTopicsList,
+    List<String>? learnedConceptsList,
     String? idToken = '',
   }) async {
     final baseUrl = AgentsCallGroupAPIGroup.getBaseUrl(
       idToken: idToken,
     );
+    final learnedTopics = _serializeList(learnedTopicsList);
+    final learnedConcepts = _serializeList(learnedConceptsList);
 
     final ffApiRequestBody = '''
 {
-  "query": "[query]",
-  "agent_id": "agent_id",
-  "conversation_id": "[conversation_id]"
+  "query": "\$.query_variable",
+  "agent_id": "\$.ailbee-enterprise-knowledg_1779121464248",
+  "conversation_id": "\$.conversation_id_variable",
+  "book_context": "\$.book_context_variable",
+  "learned_topics": "\$.learned_topics",
+  "learned_concepts": "\$.learned_concepts"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'BookSearch',
@@ -102,19 +116,41 @@ class BookSearchCall {
     );
   }
 
-  dynamic reply(dynamic response) => getJsonField(
-        response,
-        r'''$.reply''',
-      );
-  dynamic conversationid(dynamic response) => getJsonField(
+  String? conversationid(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.conversation_id''',
-      );
+      ));
   List? citations(dynamic response) => getJsonField(
         response,
         r'''$.citations''',
         true,
       ) as List?;
+  String? replyquote(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.reply.quote''',
+      ));
+  String? replybaseanswer(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.reply.base_answer''',
+      ));
+  String? replyaiexplanation(dynamic response) =>
+      castToType<String>(getJsonField(
+        response,
+        r'''$.reply.ai_explanation''',
+      ));
+  String? replyquestion(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.reply.question''',
+      ));
+  List<String>? replysuggestedchips(dynamic response) => (getJsonField(
+        response,
+        r'''$.reply.suggested_chips''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
 }
 
 /// End AgentsCallGroupAPI Group Code

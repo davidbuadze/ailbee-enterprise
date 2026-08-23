@@ -22,31 +22,35 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Ailbee">
+  <meta name="apple-mobile-web-app-title" content="12.com.ge">
 
   
 
-  <meta name="robots" content="noindex" />
+  
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" href="185.png" sizes="any"/>
+  
 
   <!-- Open Graph & SEO tags -->
-  <meta property="og:title" content="Ailbee" />
-  <meta property="og:description" content="Built with FlutterFlow." />
-  <meta property="og:image" content="https://storage.googleapis.com/flutterflow-prod-hosting/og_splash_gradient.png" /> 
-  <meta name="twitter:title" content="Ailbee" />
-  <meta name="twitter:description" content="Built with FlutterFlow." />
-  <meta name="twitter:image" content="https://storage.googleapis.com/flutterflow-prod-hosting/og_splash_gradient.png" />
+  <meta property="og:title" content="This is an AI-Educational Platform powered by an LLM (Large Language Mode)l by google.com" />
+  <meta property="og:description" content="AILBEE არის საგანმანათლებლო პლატფორმა, მართული ციფრული ლინგვისტური მოდელის მეშვეობით (ხელოვნური ინტელექტი).
+აპლიკაციის მთავარი ამოცანაა მეცნიერებებს შორის არსებული კავშირების კვლევა და მოსწავლე-სტუდენტების დახმარება, სასწავლო პროგრამებით გათვალისწინებული საგნების გაგებასა და სწავლაში." />
+  <meta property="og:image" content="/assets/assets/images/1000.jpg" /> 
+  <meta name="twitter:title" content="This is an AI-Educational Platform powered by an LLM (Large Language Mode)l by google.com" />
+  <meta name="twitter:description" content="AILBEE არის საგანმანათლებლო პლატფორმა, მართული ციფრული ლინგვისტური მოდელის მეშვეობით (ხელოვნური ინტელექტი).
+აპლიკაციის მთავარი ამოცანაა მეცნიერებებს შორის არსებული კავშირების კვლევა და მოსწავლე-სტუდენტების დახმარება, სასწავლო პროგრამებით გათვალისწინებული საგნების გაგებასა და სწავლაში." />
+  <meta name="twitter:image" content="/assets/assets/images/1000.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <title> Ailbee </title>
-  <meta name="description" content="Built with FlutterFlow." />
+  <title> This is an AI-Educational Platform powered by an LLM (Large Language Mode)l by google.com </title>
+  <meta name="description" content="AILBEE არის საგანმანათლებლო პლატფორმა, მართული ციფრული ლინგვისტური მოდელის მეშვეობით (ხელოვნური ინტელექტი).
+აპლიკაციის მთავარი ამოცანაა მეცნიერებებს შორის არსებული კავშირების კვლევა და მოსწავლე-სტუდენტების დახმარება, სასწავლო პროგრამებით გათვალისწინებული საგნების გაგებასა და სწავლაში." />
     
 
   <!-- Status Bar color in Safari browser (iOS) and PWA -->
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f4f8">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1d2428">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#f1f4f8">
 
   <link rel="manifest" href="manifest.json">
   
@@ -54,7 +58,17 @@
 <body>
   
   
-  
+    <script src='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs' type='module'></script>
+  <script type='module'>
+  var { pdfjsLib } = globalThis;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
+
+  var pdfRenderOptions = {
+    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/',
+    cMapPacked: true,
+  }
+  </script>
+        
   
   
   <script>
