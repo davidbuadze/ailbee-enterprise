@@ -6,7 +6,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'auth_page_model.dart';
 export 'auth_page_model.dart';
 
@@ -495,11 +494,7 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                             },
                                             text: FFLocalizations.of(context)
                                                 .getText(
-                                              'rkdxwj1o' /* Google */,
-                                            ),
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.google,
-                                              size: 20.0,
+                                              'rkdxwj1o' /* G  Google */,
                                             ),
                                             options: FFButtonOptions(
                                               width: 300.0,
@@ -575,8 +570,8 @@ class _AuthPageWidgetState extends State<AuthPageWidget>
                                                       .getText(
                                                     'oukr4r6t' /* Apple */,
                                                   ),
-                                                  icon: FaIcon(
-                                                    FontAwesomeIcons.apple,
+                                                  icon: Icon(
+                                                    Icons.apple_sharp,
                                                     size: 20.0,
                                                   ),
                                                   options: FFButtonOptions(

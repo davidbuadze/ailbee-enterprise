@@ -288,11 +288,11 @@ class MobileTypography extends Typography {
         fontWeight: FontWeight.w600,
         fontSize: 20.0,
       );
-  String get titleMediumFamily => 'Oswald';
+  String get titleMediumFamily => 'Roboto';
   bool get titleMediumIsCustom => false;
-  TextStyle get titleMedium => GoogleFonts.oswald(
+  TextStyle get titleMedium => GoogleFonts.roboto(
         color: theme.primaryText,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w900,
         fontSize: 18.0,
       );
   String get titleSmallFamily => 'Oswald';

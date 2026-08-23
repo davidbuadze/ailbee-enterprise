@@ -17,7 +17,6 @@ import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'school_module_model.dart';
@@ -1053,8 +1052,8 @@ class _SchoolModuleWidgetState extends State<SchoolModuleWidget>
                                             fillColor:
                                                 FlutterFlowTheme.of(context)
                                                     .primaryBackground,
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.react,
+                                            icon: Icon(
+                                              Icons.send,
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryText,
@@ -1246,8 +1245,8 @@ class _SchoolModuleWidgetState extends State<SchoolModuleWidget>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                FaIcon(
-                                  FontAwesomeIcons.bookOpen,
+                                Icon(
+                                  Icons.menu_book,
                                   size: 25.0,
                                 ),
                                 Tab(
@@ -1260,9 +1259,9 @@ class _SchoolModuleWidgetState extends State<SchoolModuleWidget>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                FaIcon(
-                                  FontAwesomeIcons.react,
-                                  size: 30.0,
+                                Icon(
+                                  Icons.hub_outlined,
+                                  size: 25.0,
                                 ),
                                 Tab(
                                   text: FFLocalizations.of(context).getText(

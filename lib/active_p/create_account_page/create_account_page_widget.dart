@@ -7,7 +7,6 @@ import '/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'create_account_page_model.dart';
 export 'create_account_page_model.dart';
@@ -721,11 +720,7 @@ class _CreateAccountPageWidgetState extends State<CreateAccountPageWidget>
                                                     text: FFLocalizations.of(
                                                             context)
                                                         .getText(
-                                                      '2oapfisn' /* Google */,
-                                                    ),
-                                                    icon: FaIcon(
-                                                      FontAwesomeIcons.google,
-                                                      size: 20.0,
+                                                      '2oapfisn' /* G  Google */,
                                                     ),
                                                     options: FFButtonOptions(
                                                       width: 300.0,
@@ -817,9 +812,8 @@ class _CreateAccountPageWidgetState extends State<CreateAccountPageWidget>
                                                                 .getText(
                                                           'o4fkbl0k' /* Apple */,
                                                         ),
-                                                        icon: FaIcon(
-                                                          FontAwesomeIcons
-                                                              .apple,
+                                                        icon: Icon(
+                                                          Icons.apple_sharp,
                                                           size: 26.0,
                                                         ),
                                                         options:

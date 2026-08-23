@@ -178,7 +178,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ru': '',
     },
     'rkdxwj1o': {
-      'ka': 'Google',
+      'ka': 'G  Google',
       'en': '',
       'ru': '',
     },
@@ -249,7 +249,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ru': '',
     },
     '2oapfisn': {
-      'ka': 'Google',
+      'ka': 'G  Google',
       'en': '',
       'ru': '',
     },
@@ -288,7 +288,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ru': '',
     },
     'nharmluf': {
-      'ka': 'Google',
+      'ka': 'G Google',
       'en': '',
       'ru': '',
     },
@@ -478,7 +478,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'en': '',
       'ru': '',
     },
-    'dz9v9jlv': {
+    '1837vlb5': {
       'ka': 'Home',
       'en': '',
       'ru': '',
@@ -607,7 +607,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'en': '',
       'ru': '',
     },
-    'bys6e4ba': {
+    '5nqwssry': {
       'ka': 'Home',
       'en': '',
       'ru': '',

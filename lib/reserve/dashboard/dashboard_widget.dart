@@ -5,7 +5,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'dashboard_model.dart';
@@ -181,8 +180,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               borderColor: FlutterFlowTheme.of(context).accent3,
                               borderRadius: 8.0,
                               buttonSize: 120.0,
-                              icon: FaIcon(
-                                FontAwesomeIcons.gofore,
+                              icon: Icon(
+                                Icons.home,
                                 color: FlutterFlowTheme.of(context).warning,
                                 size: 30.0,
                               ),
@@ -305,8 +304,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               borderColor: FlutterFlowTheme.of(context).accent3,
                               borderRadius: 8.0,
                               buttonSize: 120.0,
-                              icon: FaIcon(
-                                FontAwesomeIcons.react,
+                              icon: Icon(
+                                Icons.home,
                                 color: FlutterFlowTheme.of(context).info,
                                 size: 24.0,
                               ),

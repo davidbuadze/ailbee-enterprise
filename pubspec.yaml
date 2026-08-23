@@ -157,14 +157,6 @@ flutter:
     - assets/jsons/
 
   fonts:
-    - family: 'Sonia Diary'
-      fonts:
-        - asset: assets/fonts/Sonia_Diary.otf
-          weight: 500
-    - family: 'ZtShagoSemiBold'
-      fonts:
-        - asset: assets/fonts/ZtShago-SemiBold.otf
-          weight: 600
     - family: 'darknexis500'
       fonts:
         - asset: assets/fonts/DarkNexis.ttf

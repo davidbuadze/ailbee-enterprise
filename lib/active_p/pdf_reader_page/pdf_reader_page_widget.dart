@@ -309,7 +309,7 @@ class _PdfReaderPageWidgetState extends State<PdfReaderPageWidget> {
                             borderWidth: 1.0,
                             buttonSize: 50.0,
                             icon: Icon(
-                              Icons.arrow_back_rounded,
+                              Icons.arrow_back,
                               color: Colors.white,
                               size: 30.0,
                             ),

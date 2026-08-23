@@ -3,7 +3,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'custom_navigation_menu_model.dart';
 export 'custom_navigation_menu_model.dart';
@@ -100,8 +99,8 @@ class _CustomNavigationMenuWidgetState
                 borderColor: FlutterFlowTheme.of(context).accent3,
                 borderRadius: 8.0,
                 buttonSize: 65.0,
-                icon: FaIcon(
-                  FontAwesomeIcons.react,
+                icon: Icon(
+                  Icons.hub,
                   color: widget.activeTab == 3
                       ? FlutterFlowTheme.of(context).tertiary
                       : FlutterFlowTheme.of(context).primaryBackground,
@@ -117,8 +116,8 @@ class _CustomNavigationMenuWidgetState
                 borderColor: FlutterFlowTheme.of(context).accent3,
                 borderRadius: 8.0,
                 buttonSize: 65.0,
-                icon: FaIcon(
-                  FontAwesomeIcons.react,
+                icon: Icon(
+                  Icons.hub,
                   color: widget.activeTab == 3
                       ? FlutterFlowTheme.of(context).tertiary
                       : FlutterFlowTheme.of(context).primaryBackground,

@@ -477,11 +477,7 @@ class _WelcomePageWidgetState extends State<WelcomePageWidget>
                                         context.mounted);
                                   },
                                   text: FFLocalizations.of(context).getText(
-                                    'nharmluf' /* Google */,
-                                  ),
-                                  icon: FaIcon(
-                                    FontAwesomeIcons.google,
-                                    size: 30.0,
+                                    'nharmluf' /* G Google */,
                                   ),
                                   options: FFButtonOptions(
                                     width: 130.0,
@@ -490,8 +486,6 @@ class _WelcomePageWidgetState extends State<WelcomePageWidget>
                                         0.0, 0.0, 0.0, 0.0),
                                     iconPadding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 0.0),
-                                    iconColor:
-                                        FlutterFlowTheme.of(context).accent4,
                                     color: FlutterFlowTheme.of(context).accent3,
                                     textStyle: FlutterFlowTheme.of(context)
                                         .titleMedium
@@ -501,7 +495,7 @@ class _WelcomePageWidgetState extends State<WelcomePageWidget>
                                                   .titleMediumFamily,
                                           color: FlutterFlowTheme.of(context)
                                               .accent4,
-                                          fontSize: 16.0,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                           decoration: TextDecoration.underline,
                                           useGoogleFonts:
@@ -547,7 +541,7 @@ class _WelcomePageWidgetState extends State<WelcomePageWidget>
                                         ),
                                         icon: FaIcon(
                                           FontAwesomeIcons.apple,
-                                          size: 30.0,
+                                          size: 22.0,
                                         ),
                                         options: FFButtonOptions(
                                           width: 130.0,
@@ -607,8 +601,8 @@ class _WelcomePageWidgetState extends State<WelcomePageWidget>
                                     'c4hf444u' /* email */,
                                   ),
                                   icon: Icon(
-                                    Icons.alternate_email_sharp,
-                                    size: 30.0,
+                                    Icons.alternate_email,
+                                    size: 20.0,
                                   ),
                                   options: FFButtonOptions(
                                     width: 130.0,
