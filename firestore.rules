@@ -2,33 +2,17 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ==========================================
-    // 1. ПУБЛИЧНЫЙ КАТАЛОГ (Книги, предметы, классы)
-    // Доступен для чтения всем (гостям, ученикам, анонимам)
-    // ==========================================
-    match /books/{document} {
-      allow read: if true;
-      allow write: if false;
-    }
-    match /ailbee-books/{document} {
-      allow read: if true;
-      allow write, create, delete: if false;
-    }
-    match /education_levels/{document} {
-      allow read: if true;
-      allow write, create, delete: if false;
-    }
-    match /subjects/{document} {
-      allow read: if true;
-      allow write, create, delete: if false;
-    }
+    // 1. ПУБЛИЧНЫЙ КАТАЛОГ
+    match /books/{document} { allow read: if true; allow write: if false; }
+    match /ailbee-books/{document} { allow read: if true; allow write: if false; }
+    match /education_levels/{document} { allow read: if true; allow write: if false; }
+    match /subjects/{document} { allow read: if true; allow write: if false; }
 
-    // ==========================================
     // 2. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ
-    // ==========================================
     match /users/{userId} {
       allow read, update: if request.auth != null && request.auth.uid == userId;
-      allow create, delete: if false; 
+      allow create: if request.auth != null; // Разрешено для регистрации
+      allow delete: if false; 
     }
     match /ailbee-user-data/{document} {
       allow create: if request.auth != null;
@@ -36,10 +20,7 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // ==========================================
-    // 3. ОРГАНИЗАЦИЯ ЗАДАЧ И КАЛЕНДАРЯ (TASKS)
-    // Доступ к своим задачам для авторизованных и анонимных пользователей
-    // ==========================================
+    // 3. ЗАДАЧИ И КАЛЕНДАРЬ
     match /tasks/{document} {
       allow create: if request.auth != null;
       allow read, update, delete: if request.auth != null && 
@@ -47,30 +28,26 @@ service cloud.firestore {
          resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid));
     }
 
-    // ==========================================
     // 4. ДИАЛОГИ И ИССЛЕДОВАНИЯ
-    // ==========================================
     match /conversations/{document} {
       allow create: if request.auth != null;
       allow read, update: if request.auth != null && request.auth.uid == resource.data.user_id;
       allow delete: if false;
     }
 
-    // ==========================================
-    // 5. СИСТЕМНЫЕ ЛОГИ И АУДИТ (СТРОГО БЭКЕНД)
-    // ==========================================
+    // 5. СИСТЕМНЫЕ ЛОГИ И АУДИТ
     match /audit_logs/{document=**} { allow read, write: if false; }
     match /onUserDeleted/{document=**} { allow read, write: if false; }
     match /export_logs/{document} {
       allow create: if request.auth != null;
-      allow read, write, delete: if false;
+      allow read, update, delete: if false;
     }
 
-    // ==========================================
     // 6. СЛУЖЕБНЫЙ ДОСТУП FLUTTERFLOW
-    // ==========================================
     match /{document=**} {
-      allow read, write: if request.auth != null && request.auth.token.email.matches("firebase@flutterflow.io");
+      allow read, write: if request.auth != null && 
+        request.auth.token.email != null && 
+        request.auth.token.email.matches("firebase@flutterflow.io");
     }
   }
 }
