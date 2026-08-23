@@ -17,6 +17,9 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Update intl package
+        run: flutter pub add intl:^0.20.3
+
       - name: Build Web App
         run: |
           flutter pub get
