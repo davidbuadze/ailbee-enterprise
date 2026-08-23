@@ -15,7 +15,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'
+          flutter-version: '3.27.0'
 
       - name: Fix Dependency Conflicts
         run: |
@@ -35,9 +35,7 @@ jobs:
                   clean_lines.append(line)
           
           clean_lines.append('\ndependency_overrides:\n')
-          clean_lines.append('  collection: 1.18.0\n')
-          clean_lines.append('  meta: 1.12.0\n')
-          clean_lines.append('  device_info_plus: 10.1.0\n')
+          clean_lines.append('  font_awesome_flutter: ^10.8.0\n')
           
           with open('pubspec.yaml', 'w') as f:
               f.writelines(clean_lines)
