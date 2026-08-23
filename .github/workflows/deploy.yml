@@ -17,7 +17,7 @@ jobs:
         with:
           flutter-version: '3.24.3'
 
-      - name: Align Dependencies for Flutter 3.24.3
+      - name: Lock All Dependencies for Flutter 3.24.3
         run: |
           python3 -c "
           with open('pubspec.yaml', 'r') as f:
@@ -34,6 +34,7 @@ jobs:
             device_info_plus: 10.1.0
             url_launcher_web: 2.3.0
             url_launcher_android: 6.3.0
+            shared_preferences_android: 2.3.0
             google_fonts: 6.2.1
             http: 1.2.1
           '''
