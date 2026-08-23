@@ -33,6 +33,7 @@ jobs:
             collection: 1.18.0
             device_info_plus: 10.1.0
             url_launcher_web: 2.3.0
+            url_launcher_android: 6.3.0
             google_fonts: 6.2.1
             http: 1.2.1
           '''
