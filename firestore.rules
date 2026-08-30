@@ -2,51 +2,65 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 1. ДИАЛОГИ (Разрешено создание и обновление, удаление запрещено)
-    match /conversations/{document} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
-      allow read, update: if request.auth != null && request.auth.uid == resource.data.user_id;
-      allow delete: if false;
-    }
-
-    // 2. ПУБЛИЧНЫЕ СТРАВОЧНИКИ И КАТАЛОГИ (Доступны всем, включая гостей)
-    match /education_levels/{document} { allow read: if true; allow write: if false; }
-    match /subjects/{document} { allow read: if true; allow write: if false; }
-    match /ailbee-books/{document} { allow read: if true; allow write: if false; }
-
-    // 3. СИСТЕМНЫЕ ЛОГИ (Запись авторизованными, чтение/изменение/удаление запрещено)
-    match /export_logs/{document} {
-      allow create: if request.auth != null;
-      allow read, update, delete: if false;
-    }
-
-    // 4. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ (Изолированный доступ к своему документу)
-    match /ailbee-user-data/{document} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
-      allow read, update: if request.auth != null && (request.auth.uid == document || request.auth.uid == resource.data.uid);
-      allow delete: if false;
-    }
-
-    // 5. ЗАДАЧИ И КАЛЕНДАРЬ
-    match /tasks/{document} {
-      allow create: if request.auth != null && 
-        request.resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid);
-      allow read, update, delete: if request.auth != null && 
-        resource.data.user_ref == /databases/$(database)/documents/ailbee-user-data/$(request.auth.uid);
-    }
-
-    // 6. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ (Безопасная регистрация и обновление)
-    match /users/{document} {
-      allow create: if request.auth != null;
-      allow read, update: if request.auth != null && (request.auth.uid == document || request.auth.uid == resource.data.uid);
-      allow delete: if false;
-    }
-
-    // 7. СЛУЖЕБНЫЙ ДОСТУП FLUTTERFLOW
+    // 1. СЛУЖЕБНЫЙ ДОСТУП FLUTTERFLOW CMS (Единый блок для всех коллекций)
     match /{document=**} {
       allow read, write: if request.auth != null && 
         request.auth.token.email != null && 
-        request.auth.token.email.matches("firebase@flutterflow.io");
+        request.auth.token.email == "firebase@flutterflow.io";
     }
+
+    // 2. ДИАЛОГИ (Исправлено совпадение полей uid -> user_id)
+    match /conversations/{document} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.user_id;
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.user_id;
+      allow delete: if false;
+    }
+
+    // 3. ПУБЛИЧНЫЕ СПРАВОЧНИКИ (Доступны всем на чтение)
+    match /education_levels/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /subjects/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /ailbee-books/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 4. СИСТЕМНЫЕ ЛОГИ
+    match /export_logs/{document} {
+      allow create: if request.auth != null;
+      allow read, write, delete: if false;
+    }
+
+    // 5. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+    match /ailbee-user-data/{document} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow delete: if false;
+    }
+
+    // 6. ЗАМЕТКИ И ИНСАЙТЫ
+    match /saved_insights/{document} {
+      allow create: if request.auth != null && request.resource.data.user_ref == /databases/$(database)/documents/users/$(request.auth.uid);
+      allow read, write, delete: if request.auth != null && resource.data.user_ref == /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    // 7. ЗАДАЧИ
+    match /tasks/{document} {
+      allow create: if request.auth != null && request.resource.data.user_ref == /databases/$(database)/documents/users/$(request.auth.uid);
+      allow read, write, delete: if request.auth != null && resource.data.user_ref == /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    // 8. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ
+    match /users/{document} {
+      allow create: if request.auth != null;
+      allow read, write: if request.auth != null && (request.auth.uid == document || request.auth.uid == resource.data.uid);
+      allow delete: if false;
+    }
+
   }
 }
